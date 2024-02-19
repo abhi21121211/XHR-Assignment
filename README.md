@@ -28,13 +28,7 @@ XHR Mastery Assignment/
       └─ ...
 ```
 
-## Video Walkthrough of the project
-Attach a very short video walkthrough of all of the features [1 - 3 minutes]
 
-
-
-## Video Walkthrough of the codebase
-Attach a very short video walkthrough of the codebase [1 - 5 minutes]
 
 https://github.com/abhi21121211/XHR-Assignment.git
 
