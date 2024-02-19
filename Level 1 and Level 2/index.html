@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posts</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #posts {
+      margin-bottom: 20px;
+    }
+    .post {
+      margin-bottom: 10px;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+    input, textarea, button {
+      display: block;
+      margin-bottom: 10px;
+    }
+    .success-msg {
+      color: green;
+    }
+    .error-msg {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="posts"></div>
+
+  <form id="postForm">
+    <input type="text" id="title" placeholder="Title" required>
+    <textarea id="body" placeholder="Body" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="successMsg" class="success-msg" style="display: none;">Post added successfully!</div>
+  <div id="errorMsg" class="error-msg" style="display: none;"></div>
+
+  <script>
+    // Function to display posts fetched via XHR
+    function displayPosts() {
+      const xhr = new XMLHttpRequest();
+      const postsDiv = document.getElementById('posts');
+
+      xhr.open('GET', 'https://jsonplaceholder.typicode.com/posts', true);
+
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const posts = JSON.parse(xhr.responseText);
+          posts.forEach(post => {
+            const postElem = document.createElement('div');
+            postElem.classList.add('post');
+            postElem.textContent = post.title;
+            postsDiv.appendChild(postElem);
+          });
+        } else {
+          const errorMsg = document.getElementById('errorMsg');
+          errorMsg.textContent = 'Failed to fetch posts';
+          errorMsg.style.display = 'block';
+        }
+      };
+
+      xhr.onerror = function() {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = 'Failed to fetch posts';
+        errorMsg.style.display = 'block';
+      };
+
+      xhr.send();
+    }
+
+    // Function to handle form submission
+    function handleSubmit(event) {
+      event.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const body = document.getElementById('body').value;
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', 'https://jsonplaceholder.typicode.com/posts', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          const newPost = JSON.parse(xhr.responseText);
+          const postElem = document.createElement('div');
+          postElem.classList.add('post');
+          postElem.textContent = newPost.title;
+          document.getElementById('posts').appendChild(postElem);
+          document.getElementById('successMsg').style.display = 'block';
+          setTimeout(() => {
+            document.getElementById('successMsg').style.display = 'none';
+          }, 3000);
+        } else {
+          const errorMsg = document.getElementById('errorMsg');
+          errorMsg.textContent = 'Failed to add post';
+          errorMsg.style.display = 'block';
+        }
+      };
+
+      xhr.onerror = function() {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = 'Failed to add post';
+        errorMsg.style.display = 'block';
+      };
+
+      xhr.send(JSON.stringify({ title, body }));
+    }
+
+    // Event listener for form submission
+    document.getElementById('postForm').addEventListener('submit', handleSubmit);
+
+    // Display posts when the page loads
+    displayPosts();
+  </script>
+</body>
+</html>
